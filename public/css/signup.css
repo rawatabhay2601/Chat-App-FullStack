@@ -1,0 +1,13 @@
+.body{
+    background-image: url('../image/background.jpeg');
+}
+.card{
+    margin: 3rem;
+    max-width : 70%
+}
+.card-header{
+    background-color: rgb(65, 189, 65);
+}
+.form-floating{
+    margin: 1rem;
+}
