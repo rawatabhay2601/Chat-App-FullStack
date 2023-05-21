@@ -17,9 +17,20 @@ async function signupSubmit(e){
 
     try{
         await axios.post('http://localhost:3000/user/addUser',obj);
-        // window.location.href = "login.html";
+        alert('User created !!');
     }
     catch(err){
-        alert('Something went wrong !!');
+        // getting failed status from the error response
+        const {status} = err.response;
+
+        if(status === 501){
+            alert('There was some issue creating the user !!');
+        }
+        else if(status === 502) {
+            alert('User already Exists !!');
+        }
+        else{
+            alert('Something went wrong !!');
+        }
     }
 }
