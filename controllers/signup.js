@@ -1,6 +1,5 @@
-const Users = require('../models/signup');
+const Users = require('../models/users');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const helper = require('../util/helper');
 require('dotenv').config();
 
@@ -33,7 +32,7 @@ exports.addUser = async (req,res,next) => {
         }
         else{
             // user already exists
-            return res.status(502).json({message:'Failed'});
+            return res.status(502).json({message:'User exists'});
         }
     }
     else{

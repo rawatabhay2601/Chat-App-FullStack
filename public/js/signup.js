@@ -16,13 +16,12 @@ async function signupSubmit(e){
     }
 
     try{
-        await axios.post('http://localhost:3000/user/addUser',obj);
-        alert('User created !!');
-        window.href.location = "login.html";
+        const res = await axios.post('http://localhost:4000/user/addUser',obj);
+        window.location.href = "login.html";
     }
     catch(err){
         // getting failed status from the error response
-        const {status} = err.response;
+        const status = err.response.status;
 
         if(status === 501){
             alert('There was some issue creating the user !!');
@@ -33,5 +32,6 @@ async function signupSubmit(e){
         else{
             alert('Something went wrong !!');
         }
+        console.log(err);
     }
 }

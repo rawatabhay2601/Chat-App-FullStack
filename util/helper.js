@@ -1,8 +1,9 @@
+const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
 // generate token access for user
 exports.generatetokenAccess = (user) => {
-    const userId = user
+    const userId = user;
     return jwt.sign({userId : userId}, process.env.ENCRYPTIONKEY);
 };
 
