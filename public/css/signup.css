@@ -1,13 +1,22 @@
-.body{
-    background-image: url('../image/background.jpeg');
+body{
+    background-image: url('../image/background2.jpg');
 }
 .card{
     margin: 3rem;
-    max-width : 70%
+    max-width : 70%;
 }
 .card-header{
-    background-color: rgb(65, 189, 65);
+    background-color: #228B22;
+}
+.card-body{
+    background-color: lavender;
 }
 .form-floating{
     margin: 1rem;
+}
+h1, h3{
+    font-weight: 600;
+}
+header{
+    background-color: #228B22;
 }
