@@ -18,6 +18,7 @@ async function signupSubmit(e){
     try{
         await axios.post('http://localhost:3000/user/addUser',obj);
         alert('User created !!');
+        window.href.location = "login.html";
     }
     catch(err){
         // getting failed status from the error response
