@@ -1,4 +1,4 @@
-header{
+header {
     background-color: #228B22;
 }
 input.textarea {
@@ -9,15 +9,17 @@ input.textarea {
     width: 100%;
     height: 50px;
     z-index: 99;
-    background: rgb(240, 240, 252);
+    background: rgb(219, 219, 228);
     border: none;
     outline: none;
     padding-left: 55px;
     padding-right: 55px;
     color: #666;
     font-weight: 400;
+    margin-right: 55px;
+    width: 96%;
 }
-.joined{
+.joined {
     position: relative;
     left: 45%;
     list-style: none;
@@ -26,6 +28,10 @@ input.textarea {
     padding: 0 0 50px 0;
     margin-top: 30px;
     margin-bottom: 10px;
+}
+.vstack div {
+    font-weight: 600;
+    font-size: larger;
 }
 .chat {
     list-style: none;
@@ -45,8 +51,9 @@ input.textarea {
     border-top-left-radius: 0px;
     box-shadow: -1px 2px 0px #D4D4D4;
 }
-.other .card{
+div.card {
     background-color: lavender;
+    
 }
 .self {
     justify-content: flex-end;
@@ -55,8 +62,20 @@ input.textarea {
 .self .msg {
     order: 1;
     border-bottom-right-radius: 0px;
-    box-shadow: 1px 2px 0px #D4D4D4;
+    box-shadow: 1px 2px 0px #bebebe;
 }
-.self .card{
+.self .card {
     background-color: rgb(147, 185, 147);
+}
+div.msg p{
+    padding:5px;
+}
+button{
+    border-radius: 48% !important;
+    text-align: center !important;
+    font-size: larger !important;
+    font-weight: 600 !important;
+    position: absolute !important;
+    bottom:0% !important;
+    right: 0% !important;;
 }
