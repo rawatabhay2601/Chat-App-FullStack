@@ -25,7 +25,7 @@ exports.loginUser = async (req,res,next) => {
 
             // IF PASSWORDS IS CORRECT 
             if(result){
-                return  res.status(201).json({message:"User Login Successfully !!", success:response , token: helper.generatetokenAccess(id)});
+                return  res.status(201).json({message:"User Login Successfully !!" , token: helper.generatetokenAccess(id)});
             }
             // IF PASSWORDS IS INCORRECT
             else{
