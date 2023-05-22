@@ -17,8 +17,7 @@ async function loginSubmit(e){
         const res = await axios.post('http://localhost:4000/login/loginUser',obj);
         token = res.data.token;
         localStorage.setItem("token",token.toString());
-        // window.location.href = "expense-form.html";
-        alert('Succesfull !!');
+        window.location.href = "chatapp.html";
     }
     catch(err){
         const {status} = err.response;
