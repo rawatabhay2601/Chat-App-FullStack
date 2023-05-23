@@ -25,6 +25,9 @@ function creatingMessagesHTML(text){
     const divCard = document.createElement('div');
     const li = document.createElement('li');
 
+    // clearing the messages from the UI
+    parentTag.textContent = ''; 
+
     // adding text to p tag
     p.textContent = text;
 
@@ -40,13 +43,16 @@ function creatingMessagesHTML(text){
 
     parentTag.appendChild(li);
 }
-// FUNCTION TO CREATE MESSAGE IN HTML
+// FUNCTION TO CREATE OTHER'S MESSAGE IN HTML
 function creatingMessagesHTMLothers(text){
     const parentTag = document.querySelector('.chat');
     const p = document.createElement('p');
     const divMsg = document.createElement('div');
     const divCard = document.createElement('div');
     const li = document.createElement('li');
+
+    // clearing the messages from the UI
+    parentTag.textContent = '';
 
     // adding text to p tag
     p.textContent = text;
@@ -81,3 +87,25 @@ window.addEventListener('DOMContentLoaded', async(e) => {
         }
     }
 });
+
+// creating a promise to get data every 1 second
+setInterval( async() => {
+    
+    console.log('Running !!!!');
+    const token = localStorage.getItem('token');
+    const res = await axios.get('http://localhost:4000/chat/getchat', {headers: {'Authorization': token}});
+    const chats = res.data.response;
+
+    for(let msg of chats){
+        
+        const {isCurrent} = msg;
+        const {chat} = msg;
+        
+        if(isCurrent === 'true'){
+            creatingMessagesHTML(chat)
+        }
+        else{
+            creatingMessagesHTMLothers(chat)
+        }
+    }
+},2000);
