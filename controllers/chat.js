@@ -14,13 +14,21 @@ exports.addChat = async (req,res,next) => {
 };
 
 exports.getChat = async(req,res,next) => {
-    let {id} = req.user;
+
+    const {id} = req.user;
     const currentId = id;
     const chats = await Chats.findAll();
 
     for(let chat of chats){
-        const {id} = chat.dataValues;
-        if(id.toString() === currentId.toString()){
+
+        const {userId} = chat.dataValues;
+        
+        // if these message belongs to user on the client end
+        // we set the isCurrent true
+        // else false
+        // we get data to UI accordingly
+         
+        if(userId === currentId){
 
             chat.dataValues = {...chat.dataValues,id:null,isCurrent:'true'};
             chat. _previousDataValues = {...chat. _previousDataValues,id:null,isCurrent:'true'};
@@ -30,5 +38,5 @@ exports.getChat = async(req,res,next) => {
             chat. _previousDataValues = {...chat. _previousDataValues,id:null,isCurrent:'false'};
         }
     }
-    return res.status(201).json({response : chats});
+    return res.status(201).json({response : chats,message:'Succesfull'});
 };
