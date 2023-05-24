@@ -5,6 +5,7 @@ async function loginSubmit(e){
     e.preventDefault();
 
     let token;
+    let name;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -14,13 +15,24 @@ async function loginSubmit(e){
     };
 
     try{
+        // WE HAVE NAME COMING IN AND CAN BE USED TO DISPLAY A MESSAGE
         const res = await axios.post('http://localhost:4000/login/loginUser',obj);
         token = res.data.token;
-        localStorage.setItem("token",token.toString());
-        window.location.href = "chatapp.html";
+        // name = res.data.name;
+        // localStorage.setItem('name',name);
+        const oldChats = null;
+        
+        // setting up localStorage
+        localStorage.setItem('token',token.toString());
+        localStorage.setItem('oldChats',JSON.stringify(oldChats));
+        localStorage.setItem('btn-display','true');
+
+        window.location.href = 'chatapp.html';
     }
     catch(err){
+
         const {status} = err.response;
+
         if(status === 401){
             alert('Incorrect Password !!');
         }
@@ -32,3 +44,9 @@ async function loginSubmit(e){
         }
     }
 };
+
+// CREATING JOINING MESSAGE
+function joinMessage(){
+    const div = document.createElement('div');
+    div.textContent = `${name} has joined the chat !!`;
+}

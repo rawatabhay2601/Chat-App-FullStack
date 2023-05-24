@@ -18,6 +18,7 @@ exports.loginUser = async (req,res,next) => {
 
         // password and ID of the user
         const encyptPassword = response.dataValues.password;
+        const {name} = response.dataValues;
         const {id} = response.dataValues;
 
         // matching entered password and stored password
@@ -25,7 +26,7 @@ exports.loginUser = async (req,res,next) => {
 
             // IF PASSWORDS IS CORRECT 
             if(result){
-                return  res.status(201).json({message:"User Login Successfully !!" , token: helper.generatetokenAccess(id)});
+                return  res.status(201).json({message:"User Login Successfully !!" , name: name, token: helper.generatetokenAccess(id)});
             }
             // IF PASSWORDS IS INCORRECT
             else{
