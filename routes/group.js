@@ -8,6 +8,7 @@ const authController = require('../middleware/auth');
 // CREATING A NEW GROUP
 router.post('/addGroup', authController.authenticate, groupController.addGroups);
 router.post('/addUserToGroup', authController.authenticate, groupController.addUserToGroup);
+router.post('/removeUserFromGroup', authController.authenticate, groupController.removeUserFromGroup);
 router.get('/getGroups', authController.authenticate, groupController.getGroups);
 
 module.exports = router;

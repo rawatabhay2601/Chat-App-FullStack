@@ -49,5 +49,5 @@ Groups.belongsToMany(Users, {through: UserGroup});
 
 // SEQUELIZE IS USED TO
 Sequelize.sync({force : false})
-    .then( res => app.listen(process.env.PORT || 4000))
-    .catch( err => console.log(err));
+    .then( res => app.listen(process.env.PORT || 4000) )
+    .catch( err => console.log(err) );

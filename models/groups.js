@@ -9,7 +9,8 @@ const Groups = sequelize.define('groups',{
         allowNull:false,
         autoIncrement:true
     },
-    name:Sequelize.STRING
+    name : Sequelize.STRING,
+    adminId : Sequelize.INTEGER
 });
 
 module.exports = Groups;

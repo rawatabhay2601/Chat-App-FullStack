@@ -59,6 +59,11 @@
                     <li class="nav-item">
                         <button class="nav-link" id="addUserToGroup" data-bs-toggle="modal" data-bs-target="#modal-add-user">Add User in Group</button>
                     </li>
+
+                    <!-- DELETING USER FROM THE GROUP -->
+                    <li class="nav-item">
+                        <button class="nav-link" id="removeUserFromGroup" data-bs-toggle="modal" data-bs-target="#modal-remove-user">Remove User From Group</button>
+                    </li>
                 </ul>
 
             </div>
@@ -107,12 +112,37 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h3 class="modal-title" style="color: black;">Create Groups</h3>
+                    <h3 class="modal-title" style="color: black;">Add User In Group</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
                     <form id="addUserGroupForm">
+
+                        <div class="form-floating" style = "margin: 0.5rem;">
+                            <input type="email" name="email" class="form-control" id="email" placeholder="User Email" required>
+                            <label for="email">User Email</label>
+                        </div>
+
+                        <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THE MODAL FOR DELETING USER -->
+    <div class="modal fade modal-fullscreen-md-down" id="modal-remove-user">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h3 class="modal-title" style="color: black;">Delete User From Group</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="removeUserGroupForm">
 
                         <div class="form-floating" style = "margin: 0.5rem;">
                             <input type="email" name="email" class="form-control" id="email" placeholder="User Email" required>

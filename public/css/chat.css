@@ -80,6 +80,9 @@ li.nav-item:hover{
     font-weight: 600;
     font-size: medium;
 }
+li.nav-item {
+    padding: 0.5rem;
+}
 li.nav-item .nav-link{
     color: black;
     

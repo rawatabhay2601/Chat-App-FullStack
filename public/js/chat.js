@@ -290,8 +290,7 @@ async function creatingGroupOptions() {
                 // MESSAGES OF A PARTICULAR GROUP
                 const messages = groupChats.data.response;
 
-                // storing the groupId in the localStorage
-                localStorage.setItem('groupID', JSON.stringify(groupId));
+                // storing the oldChats in the localStorage
                 localStorage.setItem('oldChats', JSON.stringify(messages));
 
                 // if messages exists or not
