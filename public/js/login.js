@@ -16,7 +16,7 @@ async function loginSubmit(e){
     
     try {
         // WE HAVE NAME COMING IN AND CAN BE USED TO DISPLAY A MESSAGE
-        const res = await axios.post('http://localhost:4000/login/loginUser',obj);
+        const res = await axios.post('http://3.82.236.167:4000/login/loginUser',obj);
         token = res.data.token;
         const oldChats = null;
         const groupList = null;

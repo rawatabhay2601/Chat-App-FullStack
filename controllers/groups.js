@@ -2,6 +2,7 @@ const Groups = require('../models/groups');
 const Users = require('../models/users');
 const sequelize = require('../util/database');
 const { Op } = require('sequelize');
+require('dotenv').config();
 
 // adding groups
 exports.addGroups = async (req,res,next) => {

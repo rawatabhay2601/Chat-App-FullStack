@@ -1,5 +1,5 @@
 body{
-    background-image: url('../image/background2.jpg');
+    background-image: url('background2.jpg');
 }
 .text:hover{
     color: red;

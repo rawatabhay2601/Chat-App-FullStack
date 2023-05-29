@@ -6,6 +6,7 @@ const cors = require('cors');
 const Sequelize = require('./util/database');
 const bodyParser = require('body-parser');
 const path = require('path');
+const path = require('morgan');
 
 // IMPORTING ROUTES
 const signupRoute = require('./routes/signup');
@@ -24,9 +25,10 @@ require('dotenv').config();
 
 // UTILITY MIDDLEWARES
 app.use(cors({
-    origin:"http://127.0.0.1:3000"
+    origin:"http://3.82.236.167:3000"
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(morgan('combined', {stream : accessLogStream}));
 app.use(bodyParser.json());
 
 // ROUTING MIDDLEWARES
@@ -34,6 +36,11 @@ app.use('/user', signupRoute);
 app.use('/login', loginRoute);
 app.use('/chat', chatRoute);
 app.use('/group', groupRoute);
+
+// FOR FRONTEND
+app.use((req,res) => {
+    res.sendFile(path.join(__dirname, `views/${req.url}`));
+});
 
 // CREATING JOINS FOR USER AND MESSAGE
 Users.hasMany(Chats);
@@ -49,5 +56,5 @@ Groups.belongsToMany(Users, {through: UserGroup});
 
 // SEQUELIZE IS USED TO
 Sequelize.sync({force : false})
-    .then( res => app.listen(process.env.PORT || 4000) )
-    .catch( err => console.log(err) );
+    .then( res => app.listen(process.env.PORT || 4000))
+    .catch( err => console.log(err));

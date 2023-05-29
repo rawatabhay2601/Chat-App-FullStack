@@ -1,5 +1,6 @@
 const Chats = require('../models/chats');
 const {Op} = require('sequelize');
+require('dotenv').config();
 
 exports.addChat = async (req,res,next) => {
     const {chat} = req.body;
