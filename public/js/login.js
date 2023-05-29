@@ -1,11 +1,11 @@
 const btn = document.getElementById('loginform');
 btn.addEventListener('submit',loginSubmit);
 
+// CREATING LOGIN
 async function loginSubmit(e){
     e.preventDefault();
 
     let token;
-    let name;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
@@ -13,20 +13,22 @@ async function loginSubmit(e){
         email,
         password
     };
-
-    try{
+    
+    try {
         // WE HAVE NAME COMING IN AND CAN BE USED TO DISPLAY A MESSAGE
         const res = await axios.post('http://localhost:4000/login/loginUser',obj);
         token = res.data.token;
-        // name = res.data.name;
-        // localStorage.setItem('name',name);
         const oldChats = null;
+        const groupList = null;
         
         // setting up localStorage
         localStorage.setItem('token',token.toString());
         localStorage.setItem('oldChats',JSON.stringify(oldChats));
-        localStorage.setItem('btn-display','true');
+        localStorage.setItem('groupId','null');
+        localStorage.setItem('MessageID','0');
+        localStorage.setItem('groupList',JSON.stringify(groupList));
 
+        // redirecting user to the chat page
         window.location.href = 'chatapp.html';
     }
     catch(err){

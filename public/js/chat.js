@@ -6,9 +6,10 @@ async function sendMessage() {
 
     const chat = document.querySelector('.textarea').value;
     const token = localStorage.getItem('token');
+    const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
 
     try{
-        const res = await axios.post('http://localhost:4000/chat/addchat',{chat}, {headers : {'Authorization' : token}});
+        const res = await axios.post('http://localhost:4000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
         const {id} = res.data.response;
         
         // adding last message ID
@@ -33,29 +34,133 @@ async function sendMessage() {
 // RELOAD EVENT LISTENER
 window.addEventListener('DOMContentLoaded', async() => {
     
-    const loadPrevMsg = document.getElementById('loadPrevMessage');
     const parentTag = document.querySelector('.chat');
     const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
-    const btnDisplay = localStorage.getItem('btn-display');
 
     // CLEARING THE UI
     parentTag.textContent = '';
 
-    // load the previous 10 messages
-    loadPrevMsg.onclick = async() => {
-    
-        const token = localStorage.getItem('token');
-        const parentTag = document.querySelector('.chat'); 
-        const prevMessageId = parseInt(localStorage.getItem('MessageID')) - 10;
-        console.log(':::::::::::::::::::::::::::::',prevMessageId);
+    // DISPLAY CHATS TO UI
+    // showing data on the UI
+    for(var msg of oldChats) {
+        
+        const {isCurrent} = msg;
+        const {chat} = msg;
 
+        if(isCurrent === 'true') {
+            creatingMessagesHTML(chat);
+        }
+        else {
+            creatingMessagesHTMLothers(chat);
+        }
+    }
+    
+    // storing the ID of the last message
+    if(msg) {
+        localStorage.setItem('MessageID',msg.id);
+    }
+    
+    // creating group Icons if any created
+    creatingGroupOptions();
+});
+
+// creating an interval to get data from DB every 2 seconds
+setInterval( async() => {
+
+    // selecting all the HTML elements
+    const token = localStorage.getItem('token');
+    const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
+    const lastMessageId = parseInt(localStorage.getItem('MessageID')) || 0;
+    let groupList = JSON.parse(localStorage.getItem('groupList')) || [];
+    let addToChats;
+    const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
+
+    try {
+
+        // creating multiple requests
+        const requestChats = axios.get(`http://localhost:4000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
+        const requestGroups = axios.get(`http://localhost:4000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
+        
+        // using Promise.all() to send multiple requests to the server
+        const response = await Promise.all([requestChats, requestGroups]);
+
+        // chats and group names
+        const chats = response[0].data.response;
+        const names = response[1].data.response;
+
+        // LIMITING STORAGE CAPACITY IN localStorage
+        if(oldChats.length > 10) {
+    
+            // adding new chats to the array
+            addToChats = [...chats];
+            
+            // UPDATING THE localStorage
+            localStorage.setItem('oldChats', JSON.stringify(addToChats));
+        }
+        else {
+            // adding old and new chats to the array
+            addToChats = [...oldChats, ...chats];
+            
+            // UPDATING THE localStorage
+            localStorage.setItem('oldChats', JSON.stringify(addToChats));
+        }
+
+        // showing data on the UI
+        for(var msg of chats) {
+        
+            const {isCurrent} = msg;
+            const {chat} = msg;
+
+            if(isCurrent === 'true') {
+                creatingMessagesHTML(chat);
+            }
+            else {
+                creatingMessagesHTMLothers(chat);
+            }
+        }
+        
+        // storing the ID of the last message
+        if(msg) {
+            localStorage.setItem('MessageID',msg.id);
+        }
+
+        // creating group options
+        if( !(names.length === groupList.length) ) {
+            
+            // new groups added to the groupList
+            groupList = [...names];
+
+            // localStorage is now updated
+            localStorage.setItem('groupList', JSON.stringify(groupList));
+        }
+    }
+    catch(err) {
+        alert('Something went wrong !!');
+    }
+    
+}, 2000);
+
+// loading previous messages
+const loadPrevMsg = document.getElementById('loadPrevMessage');
+loadPrevMsg.addEventListener('click', loadPrevMsgFunction);
+// load the previous 10 messages
+async function loadPrevMsgFunction() {
+    
+    // DEFINING ALL THE VARIABLES THAT ARE REQUIRED
+    const prevMessages = 10;
+    const token = localStorage.getItem('token');
+    const parentTag = document.querySelector('.chat');
+    const prevMessageId = parseInt(localStorage.getItem('MessageID')) - prevMessages;
+    const groupId = parseInt(localStorage.getItem('groupId')) || 0;
+
+    try{
         //loading last 10 messages
-        const res = await axios.get(`http://localhost:4000/chat/getchat/${prevMessageId}`, {headers: {'Authorization': token}});
+        const res = await axios.get(`http://localhost:4000/chat/getchat?lastMsgId=${prevMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
         const messages = res.data.response;
         
         // clearing the parent tag
         parentTag.textContent = '';
-
+        
         // printing all the messages on the UI
         for(var msg of messages) {
         
@@ -69,134 +174,13 @@ window.addEventListener('DOMContentLoaded', async() => {
                 creatingMessagesHTMLothers(chat)
             }
         }
-
+        
         // storing the ID of the last message
         localStorage.setItem('MessageID',msg.id || 0);
-    };
-
-    // CHECKING IF WE NEED TO DISPLAY THE BUTTON
-    if(btnDisplay === 'true') {
-        btnDisplay.style = 'block';
-    }
-
-    // DISPLAY CHATS TO UI
-    for(var msg of oldChats) {
-        
-        const {isCurrent} = msg;
-        const {chat} = msg;
-
-        if(isCurrent === 'true') {
-            creatingMessagesHTML(chat)
-        }
-        else {
-            creatingMessagesHTMLothers(chat)
-        }
-    }
-});
-
-// creating an interval to get data from DB every 2 seconds
-setInterval( async() => {
-
-    // selecting all the HTML elements
-    const token = localStorage.getItem('token');
-    const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
-    const lastMessageId = parseInt(localStorage.getItem('MessageID')) || 0;
-    let addToChats;
-    const btnDisplay = localStorage.getItem('btn-display');
-    const loadPrevMsg = document.getElementById('loadPrevMessage');
-
-    try{
-
-        const res = await axios.get(`http://localhost:4000/chat/getchat/${lastMessageId}`, {headers: {'Authorization': token}});
-        const chats = res.data.response;
-
-        // LIMITING STORAGE CAPACITY IN localStorage
-        if(oldChats.length > 10) {
-    
-            // showing the display button
-            if(btnDisplay === 'false') {
-    
-                // creating tag to add to load previous messages
-                loadPrevMsg.style = 'block';
-                
-                // have to set data in localStorage
-                localStorage.setItem('btn-display','true');
-            }
-    
-            // adding new chats to the array
-            addToChats = [...chats];
-            
-            // UPDATING THE localStorage
-            localStorage.setItem('oldChats', JSON.stringify(addToChats));
-        }
-        else{
-            // adding old and new chats to the array
-            addToChats = [...oldChats, ...chats];
-            
-            // UPDATING THE localStorage
-            localStorage.setItem('oldChats', JSON.stringify(addToChats));
-        }
-    
-        // showing data on the UI
-        for(var msg of chats) {
-            
-            const {isCurrent} = msg;
-            const {chat} = msg;
-    
-            if(isCurrent === 'true') {
-                creatingMessagesHTML(chat)
-            }
-            else {
-                creatingMessagesHTMLothers(chat)
-            }
-        }
-    
-        // storing the ID of the last message
-        if(msg){
-            localStorage.setItem('MessageID',msg.id || 0);
-        }
     }
     catch(err) {
-        console.log(err);
         alert('Something went wrong !!');
     }
-    
-}, 2000);
-
-// loading previous messages
-const loadPrevMsg = document.getElementById('loadPrevMessage');
-loadPrevMsg.addEventListener('click', loadPrevMsgFunction);
-
-// load the previous 10 messages
-async function loadPrevMsgFunction() {
-    
-    const token = localStorage.getItem('token');
-    const parentTag = document.querySelector('.chat'); 
-    const prevMessageId = parseInt(localStorage.getItem('MessageID')) - 10;
-
-    //loading last 10 messages
-    const res = await axios.get(`http://localhost:4000/chat/getchat/${prevMessageId}`, {headers: {'Authorization': token}});
-    const messages = res.data.response;
-    
-    // clearing the parent tag
-    parentTag.textContent = '';
-
-    // printing all the messages on the UI
-    for(var msg of messages) {
-    
-        const {isCurrent} = msg;
-        const {chat} = msg;
-
-        if(isCurrent === 'true') {
-            creatingMessagesHTML(chat)
-        }
-        else {
-            creatingMessagesHTMLothers(chat)
-        }
-    }
-
-    // storing the ID of the last message
-    localStorage.setItem('MessageID',msg.id || 0);
 };
 
 // -----------------------------------------------------------------------------------------------------------------------
@@ -249,4 +233,93 @@ function creatingMessagesHTMLothers(text){
     li.appendChild(divMsg);
 
     parentTag.appendChild(li);
+};
+
+// FUNCTION CREATING UI USING CALLBACK FUNCTIONS AND MESSAGES
+function creatingUI(messages,selfCb,otherCb) {
+    const parentTag = document.querySelector('.chat');
+
+    // clearing the parent tag
+    parentTag.textContent = '';
+
+    // printing all the messages on the UI
+    for(var msg of messages) {
+    
+        const {isCurrent} = msg;
+        const {chat} = msg;
+
+        if(isCurrent === 'true') {
+            selfCb(chat);
+        }
+        else {
+            otherCb(chat);
+        }
+    }
+};
+
+// FUNCTION TO CREATE A GROUP BUTTON
+async function creatingGroupOptions() {
+
+    // creating tags for the group icon
+    const groupData = JSON.parse(localStorage.getItem('groupList')) || [];
+    const parentTag = document.querySelector('.dropdown-menu');
+    const token = localStorage.getItem('token');
+
+    // EXECUTING FOR LOOP SO THAT EACH GROUP CAN BE PRESENTED TO THE UI
+    for(let group of groupData) {
+
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        const {name} = group;
+        const {id} = group;
+        const groupId = parseInt(id);
+
+        // values inserted in 'a' tag
+        a.className = 'dropdown-item';
+        a.href = '#';
+        a.textContent = `${name}`;
+        
+        // CREATING FUNCTION FOR SELECTING A GROUP
+        a.onclick = async(e) => {
+            
+            try{
+                // stroing the group id in the locaStorage for the setTimeout
+                localStorage.setItem('groupId',id);
+                const groupChats = await axios.get(`http://localhost:4000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+                
+                // MESSAGES OF A PARTICULAR GROUP
+                const messages = groupChats.data.response;
+
+                // storing the groupId in the localStorage
+                localStorage.setItem('groupID', JSON.stringify(groupId));
+                localStorage.setItem('oldChats', JSON.stringify(messages));
+
+                // if messages exists or not
+                if(messages.length) {
+                    
+                    // creating the UI
+                    creatingUI(messages,creatingMessagesHTML,creatingMessagesHTMLothers);
+                    
+                    // LAST MESSAGE ID
+                    const {id} = messages[messages.length-1];
+                    // STORING IN LOCALSTORAGE 
+                    localStorage.setItem('MessageID', JSON.stringify(id));
+                }
+                else {
+                    // STORING IN LOCALSTORAGE
+                    const parentTag = document.querySelector('.chat');
+                    parentTag.textContent = '';
+                    localStorage.setItem('MessageID', '0');
+                }
+                return;
+            }
+            catch(err) {
+                alert('Something Went Wrong !!');
+            }
+        };
+        
+        // appending the tag to the parent tag
+        li.appendChild(a);
+        parentTag.appendChild(li);
+    }
 };

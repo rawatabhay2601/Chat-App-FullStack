@@ -78,7 +78,7 @@ div.msg p{
 }
 li.nav-item:hover{
     font-weight: 600;
-    font-size: large;
+    font-size: medium;
 }
 li.nav-item .nav-link{
     color: black;
@@ -87,7 +87,7 @@ li.nav-item .nav-link{
 nav{
     background-color: #228B22;
 }
-#loadPrevMessage{
+ul li.nav-item button {
     background: none;
     border: none;
     padding: 0;
@@ -95,4 +95,7 @@ nav{
     text-align: inherit;
     cursor: pointer;
     outline: inherit;
+}
+.dropdown-item:hover{
+    background-color: aliceblue;
 }
