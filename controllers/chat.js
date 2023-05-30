@@ -5,18 +5,19 @@ require('dotenv').config();
 exports.addChat = async (req,res,next) => {
     const {chat} = req.body;
     const {groupId} = req.body;
+    let groupIdChanged = groupId;
+    if(groupId === '0')  groupIdChanged = null; 
 
     try{
 
-        const response = await req.user.createChat({chat:chat,groupId: groupId});
+        const response = await req.user.createChat({chat:chat,groupId: groupIdChanged});
         
         response.dataValues = {...response.dataValues, userId:null,isCurrent:'true'}; 
-        response._previousDataValues = {...response._previousDataValues, userId:null,isCurrent:'true'};
         
         return res.status(201).json({message:"Successful", response:response});
     }
     catch(err){
-        return res.status(501).json({message:"Failed"});
+        return res.status(501).json({message:"Failed",error:err});
     }
 };
 
