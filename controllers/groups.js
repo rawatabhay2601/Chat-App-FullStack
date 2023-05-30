@@ -89,7 +89,6 @@ exports.addUserToGroup = async (req,res,next) => {
     }
 };
 
-
 // removing user from the group
 exports.removeUserFromGroup = async (req,res,next) => {
 

@@ -32,7 +32,7 @@ const accessLogStream = fs.createWriteStream(
 
 // UTILITY MIDDLEWARES
 app.use(cors({
-    origin:"http://3.82.236.167:3000"
+    origin:"http://52.72.239.54:3000"
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('combined', {stream : accessLogStream}));

@@ -1,6 +1,7 @@
 const btn = document.getElementById('signupform');
 btn.addEventListener('submit',signupSubmit);
 
+// signup submit
 async function signupSubmit(e){
     
     e.preventDefault();
@@ -16,7 +17,7 @@ async function signupSubmit(e){
     }
 
     try{
-        await axios.post('http://3.82.236.167:3000/user/addUser',obj);
+        await axios.post('http://52.72.239.54:3000/user/addUser',obj);
         window.location.href = "login.html";
     }
     catch(err){
@@ -33,4 +34,4 @@ async function signupSubmit(e){
             alert('Something went wrong !!');
         }
     }
-}
+};

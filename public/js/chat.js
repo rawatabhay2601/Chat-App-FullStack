@@ -9,7 +9,7 @@ async function sendMessage() {
     const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
 
     try{
-        const res = await axios.post('http://3.82.236.167:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
+        const res = await axios.post('http://52.72.239.54:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
         const {id} = res.data.response;
         
         // adding last message ID
@@ -78,8 +78,8 @@ setInterval( async() => {
     try {
 
         // creating multiple requests
-        const requestChats = axios.get(`http://3.82.236.167:3000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
-        const requestGroups = axios.get(`http://3.82.236.167:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
+        const requestChats = axios.get(`http://52.72.239.54:3000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
+        const requestGroups = axios.get(`http://52.72.239.54:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
         
         // using Promise.all() to send multiple requests to the server
         const response = await Promise.all([requestChats, requestGroups]);
@@ -155,7 +155,7 @@ async function loadPrevMsgFunction() {
 
     try{
         //loading last 10 messages
-        const res = await axios.get(`http://3.82.236.167:3000/chat/getchat?lastMsgId=${prevMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
+        const res = await axios.get(`http://52.72.239.54:3000/chat/getchat?lastMsgId=${prevMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
         const messages = res.data.response;
         
         // clearing the parent tag
@@ -285,7 +285,7 @@ async function creatingGroupOptions() {
             try{
                 // stroing the group id in the locaStorage for the setTimeout
                 localStorage.setItem('groupId',id);
-                const groupChats = await axios.get(`http://3.82.236.167:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+                const groupChats = await axios.get(`http://52.72.239.54:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
                 
                 // MESSAGES OF A PARTICULAR GROUP
                 const messages = groupChats.data.response;
