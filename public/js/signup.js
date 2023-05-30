@@ -17,7 +17,7 @@ async function signupSubmit(e){
     }
 
     try{
-        await axios.post('http://52.72.239.54:3000/user/addUser',obj);
+        await axios.post('http://54.90.90.205:3000/user/addUser',obj);
         window.location.href = "login.html";
     }
     catch(err){

@@ -9,7 +9,7 @@ freechat.addEventListener('click', async() => {
 
     try {
         // sending request to the backend
-        const response = await axios.get(`http://52.72.239.54:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+        const response = await axios.get(`http://54.90.90.205:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
         
        // MESSAGES OF A PARTICULAR GROUP
        const messages = response.data.response;
