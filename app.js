@@ -6,7 +6,8 @@ const cors = require('cors');
 const Sequelize = require('./util/database');
 const bodyParser = require('body-parser');
 const path = require('path');
-const path = require('morgan');
+const morgan = require('morgan');
+const fs = require('fs');
 
 // IMPORTING ROUTES
 const signupRoute = require('./routes/signup');
@@ -22,6 +23,12 @@ const UserGroup = require('./models/user-group');
 
 // CONFIGURING dotenv SO THAT FILE VARIABLES CAN BE USED
 require('dotenv').config();
+
+//  CREATING STREAM FOR LOGGING REQUESTS
+const accessLogStream = fs.createWriteStream(
+    path.join(__dirname,'access.log'),
+    {flag : 'a'}
+);
 
 // UTILITY MIDDLEWARES
 app.use(cors({
@@ -39,7 +46,7 @@ app.use('/group', groupRoute);
 
 // FOR FRONTEND
 app.use((req,res) => {
-    res.sendFile(path.join(__dirname, `views/${req.url}`));
+    res.sendFile(path.join(__dirname, `/views/${req.url}`));
 });
 
 // CREATING JOINS FOR USER AND MESSAGE
@@ -54,7 +61,7 @@ Chats.belongsTo(Groups);
 Users.belongsToMany(Groups, {through: UserGroup});
 Groups.belongsToMany(Users, {through: UserGroup});
 
-// SEQUELIZE IS USED TO
+// SEQUELIZE IS USED TO CONNECT TO DB
 Sequelize.sync({force : false})
-    .then( res => app.listen(process.env.PORT || 4000))
+    .then( res => app.listen(process.env.PORT || 3000))
     .catch( err => console.log(err));

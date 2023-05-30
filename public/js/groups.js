@@ -9,7 +9,7 @@ createGroup.addEventListener('submit', async(e) => {
     const name = document.getElementById('Groupname').value;
 
     // sending request to create a new group
-    await axios.post('http://3.82.236.167:4000/group/addGroup', {name}, {headers: {'Authorization': token}});
+    await axios.post('http://3.82.236.167:3000/group/addGroup', {name}, {headers: {'Authorization': token}});
     alert('Group created !!');
 });
 
@@ -32,7 +32,7 @@ addUserToGroup.addEventListener('submit', async(e) => {
     };
 
     try {
-        await axios.post('http://3.82.236.167:4000/group/addUserToGroup',obj, {headers: {'Authorization':token}});
+        await axios.post('http://3.82.236.167:3000/group/addUserToGroup',obj, {headers: {'Authorization':token}});
         alert('User succesfully added !!');
     }
     catch(err) {
@@ -77,7 +77,7 @@ removeUserFromGroup.addEventListener('submit', async(e) => {
     };
 
     try {
-        await axios.post('http://3.82.236.167:4000/group/removeUserFromGroup',obj, {headers: {'Authorization':token}});
+        await axios.post('http://3.82.236.167:3000/group/removeUserFromGroup',obj, {headers: {'Authorization':token}});
         alert('User succesfully removed !!');
     }
     catch(err) {
