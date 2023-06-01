@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 require('dotenv').config();
 
 // adding groups
-exports.addGroups = async (req,res,next) => {
+exports.addGroups = async(req,res,next) => {
 
     // name of the group is taken from the frontend
     const {name} = req.body;
@@ -181,7 +181,7 @@ exports.getGroups = async (req,res,next) => {
         });
 
         
-        return res.status(200).json({response: groupNames});
+        return res.status(200).json({ response:groupNames });
     }
     catch(err) {
         return res.status(501).json({message:'Failed', error: err})

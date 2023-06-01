@@ -1,48 +1,62 @@
+// connecting a WebSocket
+const socket = io('http://localhost:3000');
+const loadPrevMsg = document.getElementById('loadPrevMessage');
+
+// taking the name of the user and posting on UI
+const joinedName = localStorage.getItem('profileName');
+appendJoinMessage('You joined');
+socket.emit('new-user', joinedName);
+
+// when a user get connected
+socket.on('user-connected', name => {
+    appendJoinMessage(`${name} connected`)
+});
+
+// when other user sends a message
+socket.on('chat-message', data => {
+    creatingMessagesHTMLothers(`${data.message}`)
+});
+
+// when we need to update the localStorage
+socket.on('chat-localStorage', messageObj => {
+    const {id,addToChats} = messageObj;
+    localStorage.setItem('MessageID', id);
+    localStorage.setItem('oldChats', addToChats);
+});
+
+// send the message to backend
 const btn = document.getElementById('button');
-btn.addEventListener('click', sendMessage);
+btn.addEventListener('click', addMessage);
 
-// SENDING MESSAGEs TO DB
-async function sendMessage() {
-
-    const chat = document.querySelector('.textarea').value;
-    const token = localStorage.getItem('token');
-    const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
-
-    try{
-        const res = await axios.post('http://54.90.90.205:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
-        const {id} = res.data.response;
-        
-        // adding last message ID
-        localStorage.setItem('MessageID',id);
-        
-        // adding created message to the old chats
-        const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
-        const chatObj = {...res.data.response};
-        const addToChats = [...oldChats, chatObj];
-        
-        // saving the messages to the localStorage
-        localStorage.setItem('oldChats',JSON.stringify(addToChats));
-        
-        // getting the data to the UI
-        creatingMessagesHTML(chat);
-    }
-    catch(err){
-        alert('Something went wrong !!');
-    }
+// adding message to the UI
+function addMessage() {
+    const chatArea = document.querySelector('.textarea');
+    const chat = chatArea.value;
+    creatingMessagesHTML(chat);
+    socket.emit('send-chat-message', chat);
+    chatArea.value = '';
+    addMessageToDB(chat);
 };
 
 // RELOAD EVENT LISTENER
 window.addEventListener('DOMContentLoaded', async() => {
     
+    const token = localStorage.getItem('token');
     const parentTag = document.querySelector('.chat');
-    const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
+    const groupId = JSON.parse(localStorage.getItem('groupId'));
+
+    const resGroup = axios.get(`http://localhost:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
+    const resChats = axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+
+    const response = await Promise.all([resGroup, resChats]);
+    const groupNames = response[0].data.response;
+    const chats = response[1].data.response;
 
     // CLEARING THE UI
     parentTag.textContent = '';
 
-    // DISPLAY CHATS TO UI
     // showing data on the UI
-    for(var msg of oldChats) {
+    for(var msg of chats) {
         
         const {isCurrent} = msg;
         const {chat} = msg;
@@ -55,107 +69,102 @@ window.addEventListener('DOMContentLoaded', async() => {
         }
     }
     
-    // storing the ID of the last message
-    if(msg) {
-        localStorage.setItem('MessageID',msg.id);
-    }
-    
     // creating group Icons if any created
-    creatingGroupOptions();
+    creatingGroupOptions(groupNames);
+
+    // reseting the previous message
+    localStorage.setItem('previousStorage','10');
 });
 
 // creating an interval to get data from DB every 2 seconds
-setInterval( async() => {
+// setInterval( async() => {
 
-    // selecting all the HTML elements
-    const token = localStorage.getItem('token');
-    const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
-    const lastMessageId = parseInt(localStorage.getItem('MessageID')) || 0;
-    let groupList = JSON.parse(localStorage.getItem('groupList')) || [];
-    let addToChats;
-    const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
+//     // selecting all the HTML elements
+//     const token = localStorage.getItem('token');
+//     const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
+//     const lastMessageId = parseInt(localStorage.getItem('MessageID')) || 0;
+//     let groupList = JSON.parse(localStorage.getItem('groupList')) || [];
+//     let addToChats;
+//     const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
 
-    try {
+//     try {
 
-        // creating multiple requests
-        const requestChats = axios.get(`http://54.90.90.205:3000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
-        const requestGroups = axios.get(`http://54.90.90.205:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
-        
-        // using Promise.all() to send multiple requests to the server
-        const response = await Promise.all([requestChats, requestGroups]);
+//         // creating multiple requests
+//         const requestChats = axios.get(`http://localhost:3000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
+//         const requestGroups = axios.get(`http://localhost:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
 
-        // chats and group names
-        const chats = response[0].data.response;
-        const names = response[1].data.response;
+//         // using Promise.all() to send multiple requests to the server
+//         const response = await Promise.all([requestChats, requestGroups]);
 
-        // LIMITING STORAGE CAPACITY IN localStorage
-        if(oldChats.length > 10) {
+//         // chats and group names
+//         const chats = response[0].data.response;
+//         const names = response[1].data.response;
+
+//         // LIMITING STORAGE CAPACITY IN localStorage
+//         if(oldChats.length > 10) {
     
-            // adding new chats to the array
-            addToChats = [...chats];
+//             // adding new chats to the array
+//             addToChats = [...chats];
             
-            // UPDATING THE localStorage
-            localStorage.setItem('oldChats', JSON.stringify(addToChats));
-        }
-        else {
-            // adding old and new chats to the array
-            addToChats = [...oldChats, ...chats];
+//             // UPDATING THE localStorage
+//             localStorage.setItem('oldChats', JSON.stringify(addToChats));
+//         }
+//         else {
+//             // adding old and new chats to the array
+//             addToChats = [...oldChats, ...chats];
             
-            // UPDATING THE localStorage
-            localStorage.setItem('oldChats', JSON.stringify(addToChats));
-        }
+//             // UPDATING THE localStorage
+//             localStorage.setItem('oldChats', JSON.stringify(addToChats));
+//         }
 
-        // showing data on the UI
-        for(var msg of chats) {
+//         // showing data on the UI
+//         for(var msg of chats) {
         
-            const {isCurrent} = msg;
-            const {chat} = msg;
+//             const {isCurrent} = msg;
+//             const {chat} = msg;
 
-            if(isCurrent === 'true') {
-                creatingMessagesHTML(chat);
-            }
-            else {
-                creatingMessagesHTMLothers(chat);
-            }
-        }
+//             if(isCurrent === 'true') {
+//                 creatingMessagesHTML(chat);
+//             }
+//             else {
+//                 creatingMessagesHTMLothers(chat);
+//             }
+//         }
         
-        // storing the ID of the last message
-        if(msg) {
-            localStorage.setItem('MessageID',msg.id);
-        }
+//         // storing the ID of the last message
+//         if(msg) {
+//             localStorage.setItem('MessageID',msg.id);
+//         }
 
-        // creating group options
-        if( !(names.length === groupList.length) ) {
+//         // creating group options
+//         if( !(names.length === groupList.length) ) {
             
-            // new groups added to the groupList
-            groupList = [...names];
+//             // new groups added to the groupList
+//             groupList = [...names];
 
-            // localStorage is now updated
-            localStorage.setItem('groupList', JSON.stringify(groupList));
-        }
-    }
-    catch(err) {
-        alert('Something went wrong !!');
-    }
+//             // localStorage is now updated
+//             localStorage.setItem('groupList', JSON.stringify(groupList));
+//         }
+//     }
+//     catch(err) {
+//         alert('Something went wrong !!');
+//     }
     
-}, 2000);
+// }, 2000);
 
 // loading previous messages
-const loadPrevMsg = document.getElementById('loadPrevMessage');
 loadPrevMsg.addEventListener('click', loadPrevMsgFunction);
 // load the previous 10 messages
 async function loadPrevMsgFunction() {
     
     // DEFINING ALL THE VARIABLES THAT ARE REQUIRED
-    const prevMessages = 10;
     const token = localStorage.getItem('token');
     const parentTag = document.querySelector('.chat');
-    const prevMessageId = parseInt(localStorage.getItem('MessageID')) - prevMessages;
     const groupId = parseInt(localStorage.getItem('groupId')) || 0;
 
     try{
         //loading last 10 messages
-        const res = await axios.get(`http://54.90.90.205:3000/chat/getchat?lastMsgId=${prevMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
+        const res = await axios.get(`http://localhost:3000/chat/getchat?groupId=${groupId}`, {headers: {'Authorization': token}});
         const messages = res.data.response;
         
         // clearing the parent tag
@@ -258,10 +267,9 @@ function creatingUI(messages,selfCb,otherCb) {
 };
 
 // FUNCTION TO CREATE A GROUP BUTTON
-async function creatingGroupOptions() {
+async function creatingGroupOptions(groupData) {
 
     // creating tags for the group icon
-    const groupData = JSON.parse(localStorage.getItem('groupList')) || [];
     const parentTag = document.querySelector('.dropdown-menu');
     const token = localStorage.getItem('token');
 
@@ -285,7 +293,7 @@ async function creatingGroupOptions() {
             try{
                 // stroing the group id in the locaStorage for the setTimeout
                 localStorage.setItem('groupId',id);
-                const groupChats = await axios.get(`http://54.90.90.205:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+                const groupChats = await axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
                 
                 // MESSAGES OF A PARTICULAR GROUP
                 const messages = groupChats.data.response;
@@ -320,5 +328,35 @@ async function creatingGroupOptions() {
         // appending the tag to the parent tag
         li.appendChild(a);
         parentTag.appendChild(li);
+    }
+};
+
+// FUNCTION TO APPEND JOINING MESSAGES
+function appendJoinMessage(name) {
+
+    const parentTag = document.getElementById('userName');
+    
+    // 'div' tag is created
+    const div = document.createElement('div');
+    div.className = 'col';
+    div.style = '';
+    div.textContent = name;
+     
+    parentTag.appendChild(div);
+};
+
+// SENDING MESSAGEs TO DB
+async function addMessageToDB(chat) {
+
+    const token = localStorage.getItem('token');
+    const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
+
+    try{
+        // sending request to save the data
+        await axios.post('http://localhost:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
+    }
+    catch(err){
+        console.log(err);
+        alert('Something went wrong !!');
     }
 };
