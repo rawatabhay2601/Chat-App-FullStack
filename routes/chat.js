@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const chatController = require('../controllers/chat');
 const authController = require('../middleware/auth');
@@ -7,5 +8,7 @@ const authController = require('../middleware/auth');
 router.post('/addChat', authController.authenticate, chatController.addChat);
 router.get('/getchat', authController.authenticate, chatController.getChat);
 router.get('/getLastChat', authController.authenticate, chatController.getLastChat);
+router.post('/uploadImage', authController.authenticate, chatController.uploadImage);
+router.post('/addImage', authController.authenticate, chatController.addImage);
 
 module.exports = router;

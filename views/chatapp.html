@@ -37,9 +37,9 @@
                     <!-- ADD NAVBAR LINKS -->
 
                     <!-- LOADING PREVIOUS TEXT NAV ITEM -->
-                    <!-- <li class="nav-item" id="prevMsgClick">
+                    <li class="nav-item" id="prevMsgClick">
                         <button type="button" id="loadPrevMessage" style="display:block;" >Load Prev Texts</button>
-                    </li> -->
+                    </li>
 
                     <!-- DROPDOWN FOR SELECTING GROUP -->
                     <li class="nav-item dropdown">
@@ -65,8 +65,13 @@
                     <li class="nav-item">
                         <button class="nav-link" id="removeUserFromGroup" data-bs-toggle="modal" data-bs-target="#modal-remove-user">Remove User From Group</button>
                     </li>
-                </ul>
 
+                    <!-- ADDING IMAGES TO THE PAGE -->
+                    <li class="nav-item">
+                        <button  class="nav-link" id="addImageGroup" data-bs-toggle="modal" data-bs-target="#modal-add-image">Add Image</button>
+                    </li>
+
+                </ul>
             </div>
         </div>
     </nav>
@@ -79,9 +84,9 @@
     <!-- THIS IS WHERE WE ADD CHAT -->
     <ol class="chat"></ol>
     
+    <!-- TEXT AREA AND THE SUBMIT BUTTON -->
     <input class="textarea" type="text" placeholder="Type here!">
-
-    <button class="btn btn-success" id="button"> -> </button>
+    <button class="btn btn-success" id="button">-></button>
 
     <!-- THE MODAL FOR CREATING GROUPS -->
     <div class="modal fade modal-fullscreen-md-down" id="modal-create-group">
@@ -157,9 +162,32 @@
             </div>
         </div>
     </div>
+
+    <!-- THE MODAL FOR ADDING IMAGE -->
+    <div class="modal fade modal-fullscreen-md-down" id="modal-add-image">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h3 class="modal-title" style="color: black;">Add Image</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="imageForm">
+                        <input type="file" name="image" id="imageInput">
+                        <button type="submit" data-bs-dismiss="modal">Upload</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
     
+    <!-- SCRIPTS -->
     <script src='/js/chat.js'></script>
     <script src='/js/freechat.js'></script>
     <script src='/js/groups.js'></script>
+    <script src='/js/imageSharing.js'></script>
 </body>
 </html>

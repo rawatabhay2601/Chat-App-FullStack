@@ -120,6 +120,7 @@ function createGroupIcon(groupObj) {
 
     const li = document.createElement('li');
     const parentTag = document.querySelector('.dropdown-menu');
+    const token = localStorage.getITem('token');
     const a = document.createElement('a');
     const {name} = groupObj;
     const {id} = groupObj;

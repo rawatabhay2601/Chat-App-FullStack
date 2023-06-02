@@ -9,7 +9,11 @@ const Chats = sequelize.define('chats',{
         allowNull:false,
         autoIncrement:true
     },
-    chat: Sequelize.STRING
+    chat: Sequelize.STRING,
+    isImage: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    }
 });
 
 module.exports = Chats;

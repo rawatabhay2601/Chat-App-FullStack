@@ -17,13 +17,6 @@ socket.on('chat-message', data => {
     creatingMessagesHTMLothers(`${data.message}`)
 });
 
-// when we need to update the localStorage
-socket.on('chat-localStorage', messageObj => {
-    const {id,addToChats} = messageObj;
-    localStorage.setItem('MessageID', id);
-    localStorage.setItem('oldChats', addToChats);
-});
-
 // send the message to backend
 const btn = document.getElementById('button');
 btn.addEventListener('click', addMessage);
@@ -60,12 +53,25 @@ window.addEventListener('DOMContentLoaded', async() => {
         
         const {isCurrent} = msg;
         const {chat} = msg;
-
-        if(isCurrent === 'true') {
-            creatingMessagesHTML(chat);
+        const {isImage} = msg;
+        if(isImage === true) {
+            
+            // creating UI for all the images
+            if(isCurrent === 'true') {
+                createImgMsgSelf(chat);
+            }
+            else {
+                createImgMsgOther(chat);
+            }
         }
         else {
-            creatingMessagesHTMLothers(chat);
+            // creating UI for all the messages
+            if(isCurrent === 'true') {
+                creatingMessagesHTML(chat);
+            }
+            else {
+                creatingMessagesHTMLothers(chat);
+            }
         }
     }
     
@@ -360,3 +366,57 @@ async function addMessageToDB(chat) {
         alert('Something went wrong !!');
     }
 };
+
+function createImgMsgSelf(imgLink) {
+
+    // getting the parent Element
+    const parentTag = document.querySelector('.chat');
+    const p = document.createElement('p');
+    const divMsg = document.createElement('div');
+    const divCard = document.createElement('div');
+    const li = document.createElement('li');
+
+    // creating image tag
+    const img = document.createElement('img');
+    img.src = imgLink;
+    img.alt = 'Image Loading Error';
+
+    // setting classes for all tags
+    divCard.className='card';
+    divMsg.className='msg';
+    li.className='self';
+
+    // appending child tags to parent tags
+    divCard.appendChild(img);
+    divMsg.appendChild(divCard);
+    li.appendChild(divMsg);
+
+    parentTag.appendChild(li);
+}
+
+function createImgMsgOther(imgLink) {
+
+    // getting the parent Element
+    const parentTag = document.querySelector('.chat');
+    const p = document.createElement('p');
+    const divMsg = document.createElement('div');
+    const divCard = document.createElement('div');
+    const li = document.createElement('li');
+
+    // creating image tag
+    const img = document.createElement('img');
+    img.src = imgLink;
+    img.alt = 'Image Loading Error';
+
+    // setting classes for all tags
+    divCard.className='card';
+    divMsg.className='msg';
+    li.className='other';
+
+    // appending child tags to parent tags
+    divCard.appendChild(img);
+    divMsg.appendChild(divCard);
+    li.appendChild(divMsg);
+
+    parentTag.appendChild(li);
+}

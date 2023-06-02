@@ -11,6 +11,7 @@ const path = require('path');
 const morgan = require('morgan');
 const fs = require('fs');
 const io = require('socket.io')(server);
+var fileupload = require("express-fileupload");
 
 // IMPORTING ROUTES
 const signupRoute = require('./routes/signup');
@@ -48,6 +49,11 @@ io.on('connection', socket => {
         socket.broadcast.emit('chat-message', { message: message })
     })
 
+    // when a user sends an image
+    socket.on('send-chat-image', link => {
+        socket.broadcast.emit('chat-image', { link : link })
+    })
+
     // updating other user's localStorage
     socket.on('update-chat-localStorage', messageObj => {
         socket.broadcast.emit('chat-localStorage', { data: messageObj })
@@ -61,6 +67,8 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('combined', {stream : accessLogStream}));
 app.use(bodyParser.json());
+app.use(fileupload());
+app.use(express.urlencoded({ extended: true }));
 
 // ROUTING MIDDLEWARES
 app.use('/user', signupRoute);
@@ -70,7 +78,7 @@ app.use('/group', groupRoute);
 
 // FOR FRONTEND
 app.use((req,res) => {
-    res.sendFile(path.join(__dirname, `/views/${req.url}`));
+    res.sendFile(path.join(__dirname, `/views/${req.url}`))
 });
 
 // CREATING JOINS FOR USER AND MESSAGE
