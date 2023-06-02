@@ -1,11 +1,12 @@
 const AWS = require('aws-sdk');
+require('dotenv').config();
 
 exports.uploadImageToS3 = (params) => {
 
   // configuring s3 bucket
   const s3bucket = new AWS.S3({
-    accessKeyId: 'AKIAYXSCVMEK2IFMLJ4A',
-    secretAccessKey: '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'
+    accessKeyId: process.env.ACCESSKEYID,
+    secretAccessKey: process.env.SECRETACCESKEY
   });
 
   // Upload the image to S3
@@ -15,7 +16,6 @@ exports.uploadImageToS3 = (params) => {
       if(err) {
         reject('Error uploading image to S3:', err);
       }
-
       else {
         resolve(data.Location);
       }

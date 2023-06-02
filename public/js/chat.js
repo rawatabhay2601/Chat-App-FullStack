@@ -1,5 +1,5 @@
 // connecting a WebSocket
-const socket = io('http://localhost:3000');
+const socket = io('http://35.174.173.248:3000');
 const loadPrevMsg = document.getElementById('loadPrevMessage');
 
 // taking the name of the user and posting on UI
@@ -38,8 +38,8 @@ window.addEventListener('DOMContentLoaded', async() => {
     const parentTag = document.querySelector('.chat');
     const groupId = JSON.parse(localStorage.getItem('groupId'));
 
-    const resGroup = axios.get(`http://localhost:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
-    const resChats = axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+    const resGroup = axios.get(`http://35.174.173.248:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
+    const resChats = axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
 
     const response = await Promise.all([resGroup, resChats]);
     const groupNames = response[0].data.response;
@@ -82,81 +82,6 @@ window.addEventListener('DOMContentLoaded', async() => {
     localStorage.setItem('previousStorage','10');
 });
 
-// creating an interval to get data from DB every 2 seconds
-// setInterval( async() => {
-
-//     // selecting all the HTML elements
-//     const token = localStorage.getItem('token');
-//     const oldChats = JSON.parse(localStorage.getItem('oldChats')) || [];
-//     const lastMessageId = parseInt(localStorage.getItem('MessageID')) || 0;
-//     let groupList = JSON.parse(localStorage.getItem('groupList')) || [];
-//     let addToChats;
-//     const groupId = JSON.parse(localStorage.getItem('groupId')) || 0;
-
-//     try {
-
-//         // creating multiple requests
-//         const requestChats = axios.get(`http://localhost:3000/chat/getchat?lastMsgId=${lastMessageId}&groupId=${groupId}`, {headers: {'Authorization': token}});
-//         const requestGroups = axios.get(`http://localhost:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
-
-//         // using Promise.all() to send multiple requests to the server
-//         const response = await Promise.all([requestChats, requestGroups]);
-
-//         // chats and group names
-//         const chats = response[0].data.response;
-//         const names = response[1].data.response;
-
-//         // LIMITING STORAGE CAPACITY IN localStorage
-//         if(oldChats.length > 10) {
-    
-//             // adding new chats to the array
-//             addToChats = [...chats];
-            
-//             // UPDATING THE localStorage
-//             localStorage.setItem('oldChats', JSON.stringify(addToChats));
-//         }
-//         else {
-//             // adding old and new chats to the array
-//             addToChats = [...oldChats, ...chats];
-            
-//             // UPDATING THE localStorage
-//             localStorage.setItem('oldChats', JSON.stringify(addToChats));
-//         }
-
-//         // showing data on the UI
-//         for(var msg of chats) {
-        
-//             const {isCurrent} = msg;
-//             const {chat} = msg;
-
-//             if(isCurrent === 'true') {
-//                 creatingMessagesHTML(chat);
-//             }
-//             else {
-//                 creatingMessagesHTMLothers(chat);
-//             }
-//         }
-        
-//         // storing the ID of the last message
-//         if(msg) {
-//             localStorage.setItem('MessageID',msg.id);
-//         }
-
-//         // creating group options
-//         if( !(names.length === groupList.length) ) {
-            
-//             // new groups added to the groupList
-//             groupList = [...names];
-
-//             // localStorage is now updated
-//             localStorage.setItem('groupList', JSON.stringify(groupList));
-//         }
-//     }
-//     catch(err) {
-//         alert('Something went wrong !!');
-//     }
-    
-// }, 2000);
 
 // loading previous messages
 loadPrevMsg.addEventListener('click', loadPrevMsgFunction);
@@ -170,7 +95,7 @@ async function loadPrevMsgFunction() {
 
     try{
         //loading last 10 messages
-        const res = await axios.get(`http://localhost:3000/chat/getchat?groupId=${groupId}`, {headers: {'Authorization': token}});
+        const res = await axios.get(`http://35.174.173.248:3000/chat/getchat?groupId=${groupId}`, {headers: {'Authorization': token}});
         const messages = res.data.response;
         
         // clearing the parent tag
@@ -299,7 +224,7 @@ async function creatingGroupOptions(groupData) {
             try{
                 // stroing the group id in the locaStorage for the setTimeout
                 localStorage.setItem('groupId',id);
-                const groupChats = await axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+                const groupChats = await axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
                 
                 // MESSAGES OF A PARTICULAR GROUP
                 const messages = groupChats.data.response;
@@ -359,7 +284,7 @@ async function addMessageToDB(chat) {
 
     try{
         // sending request to save the data
-        await axios.post('http://localhost:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
+        await axios.post('http://35.174.173.248:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
     }
     catch(err){
         console.log(err);

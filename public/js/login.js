@@ -17,7 +17,7 @@ async function loginSubmit(e){
     
     try {
         // WE HAVE NAME COMING IN AND CAN BE USED TO DISPLAY A MESSAGE
-        const res = await axios.post('http://localhost:3000/login/loginUser',obj);
+        const res = await axios.post('http://35.174.173.248:3000/login/loginUser',obj);
         token = res.data.token;
         
         // setting up localStorage
