@@ -11,7 +11,7 @@ createGroup.addEventListener('submit', async(e) => {
 
     try {
         // sending request to create a new group
-        const res = await axios.post('http://35.174.173.248:3000/group/addGroup', {name}, {headers: {'Authorization': token}});
+        const res = await axios.post('http://localhost:3000/group/addGroup', {name}, {headers: {'Authorization': token}});
         createGroupIcon(res.data.data);
         alert('Group created !!');
     }
@@ -41,7 +41,7 @@ addUserToGroup.addEventListener('submit', async(e) => {
     };
 
     try {
-        await axios.post('http://35.174.173.248:3000/group/addUserToGroup', obj, {headers: {'Authorization':token}});
+        await axios.post('http://localhost:3000/group/addUserToGroup', obj, {headers: {'Authorization':token}});
         alert('User succesfully added !!');
     }
     catch(err) {
@@ -89,7 +89,7 @@ removeUserFromGroup.addEventListener('submit', async(e) => {
     };
 
     try {
-        await axios.post('http://35.174.173.248:3000/group/removeUserFromGroup',obj, {headers: {'Authorization':token}});
+        await axios.post('http://localhost:3000/group/removeUserFromGroup',obj, {headers: {'Authorization':token}});
         alert('User succesfully removed !!');
     }
     catch(err) {
@@ -137,7 +137,7 @@ function createGroupIcon(groupObj) {
         try{
             // stroing the group id in the locaStorage for the setTimeout
             localStorage.setItem('groupId',id);
-            const groupChats = await axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+            const groupChats = await axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
             
             // MESSAGES OF A PARTICULAR GROUP
             const messages = groupChats.data.response;

@@ -62,7 +62,7 @@ io.on('connection', socket => {
 
 // UTILITY MIDDLEWARES
 app.use(cors({
-    origin:"http://35.174.173.248:3000"
+    origin:"http://localhost:3000"
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('combined', {stream : accessLogStream}));
