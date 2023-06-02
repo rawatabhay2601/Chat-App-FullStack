@@ -1,5 +1,5 @@
 // connecting a WebSocket
-const socket = io('http://localhost:3000');
+const socket = io('http://35.174.173.248:3000');
 const loadPrevMsg = document.getElementById('loadPrevMessage');
 
 // taking the name of the user and posting on UI
@@ -38,8 +38,8 @@ window.addEventListener('DOMContentLoaded', async() => {
     const parentTag = document.querySelector('.chat');
     const groupId = JSON.parse(localStorage.getItem('groupId'));
 
-    const resGroup = axios.get(`http://localhost:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
-    const resChats = axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+    const resGroup = axios.get(`http://35.174.173.248:3000/group/getGroups?groupId=${groupId}`, {headers: {'Authorization': token}});
+    const resChats = axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
 
     const response = await Promise.all([resGroup, resChats]);
     const groupNames = response[0].data.response;
@@ -95,7 +95,7 @@ async function loadPrevMsgFunction() {
 
     try{
         //loading last 10 messages
-        const res = await axios.get(`http://localhost:3000/chat/getchat?groupId=${groupId}`, {headers: {'Authorization': token}});
+        const res = await axios.get(`http://35.174.173.248:3000/chat/getchat?groupId=${groupId}`, {headers: {'Authorization': token}});
         const messages = res.data.response;
         
         // clearing the parent tag
@@ -224,7 +224,7 @@ async function creatingGroupOptions(groupData) {
             try{
                 // stroing the group id in the locaStorage for the setTimeout
                 localStorage.setItem('groupId',id);
-                const groupChats = await axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+                const groupChats = await axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
                 
                 // MESSAGES OF A PARTICULAR GROUP
                 const messages = groupChats.data.response;
@@ -284,7 +284,7 @@ async function addMessageToDB(chat) {
 
     try{
         // sending request to save the data
-        await axios.post('http://localhost:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
+        await axios.post('http://35.174.173.248:3000/chat/addchat',{chat,groupId}, {headers : {'Authorization' : token}});
     }
     catch(err){
         console.log(err);
