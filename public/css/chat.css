@@ -75,15 +75,7 @@ div.msg p {
     bottom:0% !important;
     right: 0% !important;;
 }
-#button-image {
-    border-radius: 30% !important;
-    text-align: center !important;
-    font-size: larger !important;
-    font-weight: 600 !important;
-    position: absolute !important;
-    bottom: 55px !important;
-    right: 0% !important;
-}
+
 li.nav-item:hover{
     font-weight: 600;
     font-size: medium;
@@ -110,6 +102,6 @@ ul li.nav-item button {
     background-color: aliceblue;
 }
 div.card img{
-    max-width: 9rem;
-    max-height: 13rem;
+    max-width: 20rem;
+    max-height: 25rem;
 }

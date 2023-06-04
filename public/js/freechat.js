@@ -5,21 +5,17 @@ freechat.addEventListener('click', async() => {
     
     // groupId for freechat is null
     const groupId = 0;
+    const parentTag = document.querySelector('.chat');
     const token = localStorage.getItem('token');
 
     try {
         // sending request to the backend
-        const response = await axios.get(`http://35.174.173.248:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
+        const response = await axios.get(`http://localhost:3000/chat/getLastChat?groupId=${groupId}`, {headers: {'Authorization': token}});
         
        // MESSAGES OF A PARTICULAR GROUP
        const messages = response.data.response;
        creatingUI(messages,creatingMessagesHTML,creatingMessagesHTMLothers);
-       
-       // STORING IN LOCALSTORAGE
-       const {id} = messages[messages.length-1];
-       localStorage.setItem('oldChats',JSON.stringify(messages));
-       localStorage.setItem('groupId',JSON.stringify(groupId));
-       localStorage.setItem('MessageID',JSON.stringify(id));
+       localStorage.setItem('groupId',groupId);
     }
     catch(err) {
         console.log(err);
@@ -28,23 +24,39 @@ freechat.addEventListener('click', async() => {
 });
 
 // FUNCTION CREATING UI USING CALLBACK FUNCTIONS AND MESSAGES
-function creatingUI(messages,selfCb,otherCb) {
+function creatingUI(messages) {
     const parentTag = document.querySelector('.chat');
 
     // clearing the parent tag
     parentTag.textContent = '';
 
     // printing all the messages on the UI
+    // showing data on the UI
     for(var msg of messages) {
-    
+            
         const {isCurrent} = msg;
         const {chat} = msg;
+        const {isImage} = msg;
 
-        if(isCurrent === 'true') {
-            selfCb(chat);
+        if(isImage === true) {
+
+            // creating UI for all the images
+            if(isCurrent === 'true') {
+                createImgMsgSelf(chat);
+            }
+            else {
+                createImgMsgOther(chat);
+            }
         }
         else {
-            otherCb(chat);
+
+            // creating UI for all the messages
+            if(isCurrent === 'true') {
+                creatingMessagesHTML(chat);
+            }
+            else {
+                creatingMessagesHTMLothers(chat);
+            }
         }
     }
 };
@@ -97,3 +109,57 @@ function creatingMessagesHTMLothers(text) {
 
     parentTag.appendChild(li);
 };
+
+function createImgMsgSelf(imgLink) {
+
+    // getting the parent Element
+    const parentTag = document.querySelector('.chat');
+    const p = document.createElement('p');
+    const divMsg = document.createElement('div');
+    const divCard = document.createElement('div');
+    const li = document.createElement('li');
+
+    // creating image tag
+    const img = document.createElement('img');
+    img.src = imgLink;
+    img.alt = 'Image Loading Error';
+
+    // setting classes for all tags
+    divCard.className='card';
+    divMsg.className='msg';
+    li.className='self';
+
+    // appending child tags to parent tags
+    divCard.appendChild(img);
+    divMsg.appendChild(divCard);
+    li.appendChild(divMsg);
+
+    parentTag.appendChild(li);
+}
+
+function createImgMsgOther(imgLink) {
+
+    // getting the parent Element
+    const parentTag = document.querySelector('.chat');
+    const p = document.createElement('p');
+    const divMsg = document.createElement('div');
+    const divCard = document.createElement('div');
+    const li = document.createElement('li');
+
+    // creating image tag
+    const img = document.createElement('img');
+    img.src = imgLink;
+    img.alt = 'Image Loading Error';
+
+    // setting classes for all tags
+    divCard.className='card';
+    divMsg.className='msg';
+    li.className='other';
+
+    // appending child tags to parent tags
+    divCard.appendChild(img);
+    divMsg.appendChild(divCard);
+    li.appendChild(divMsg);
+
+    parentTag.appendChild(li);
+}

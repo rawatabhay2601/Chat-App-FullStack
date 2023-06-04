@@ -20,14 +20,14 @@ form.addEventListener('submit', async(event) => {
         formData.append('image', selectedFile);
 
         // response collecting
-        const res = await axios.post('http://35.174.173.248:3000/chat/uploadImage', formData,
+        const res = await axios.post('http://localhost:3000/chat/uploadImage', formData,
         { headers : {"Authorization":token, "Content-Type": "multipart/form-data"} });
         
         // storing the link of the image in a variable
         const chat = res.data.data;
         const groupId = localStorage.getItem('groupId');
 
-        await axios.post('http://35.174.173.248:3000/chat/addImage',{chat,groupId}, { headers : {"Authorization":token}});
+        await axios.post( 'http://localhost:3000/chat/addImage', {chat,groupId}, {headers : {"Authorization":token}} );
         createImgMsgSelf(chat);
         socket.emit('send-chat-image', chat);
     }

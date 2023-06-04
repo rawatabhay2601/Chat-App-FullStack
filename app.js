@@ -12,6 +12,8 @@ const morgan = require('morgan');
 const fs = require('fs');
 const io = require('socket.io')(server);
 var fileupload = require("express-fileupload");
+const cron = require('node-cron');
+const helper = require('./util/helper');
 
 // IMPORTING ROUTES
 const signupRoute = require('./routes/signup');
@@ -24,6 +26,8 @@ const Users = require('./models/users');
 const Chats = require('./models/chats');
 const Groups = require('./models/groups');
 const UserGroup = require('./models/user-group');
+const ArchiveChats = require('./models/archiveChats');
+
 
 // CONFIGURING dotenv SO THAT FILE VARIABLES CAN BE USED
 require('dotenv').config();
@@ -60,9 +64,12 @@ io.on('connection', socket => {
     })
 });
 
+// Define the cron job to run at a specific interval
+cron.schedule('* * * * *', helper.cronFunction);
+
 // UTILITY MIDDLEWARES
 app.use(cors({
-    origin:"http://35.174.173.248:3000"
+    origin:"http://localhost:3000"
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('combined', {stream : accessLogStream}));
@@ -94,6 +101,6 @@ Users.belongsToMany(Groups, {through: UserGroup});
 Groups.belongsToMany(Users, {through: UserGroup});
 
 // SEQUELIZE IS USED TO CONNECT TO DB
-Sequelize.sync({force : false})
+Sequelize.sync({force:false})
     .then( res => server.listen(process.env.PORT || 3000))
     .catch( err => console.log(err));

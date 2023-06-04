@@ -21,47 +21,6 @@ exports.addChat = async (req,res,next) => {
     }
 };
 
-exports.getChat = async(req,res,next) => {
-
-    try {
-
-        const {id} = req.user;
-        const {groupId} = req.query;
-        let groupID = parseInt(groupId);
-        const currentId = id;
-        
-        // for free chat
-        if(groupID === 0) groupID = null;
-        const chats = await Chats.findAll({
-            where: {
-                groupId : groupID
-            }
-        });
-        
-        for(let chat of chats) {
-    
-            const {userId} = chat.dataValues;
-            
-            // if these message belongs to user on the client end
-            // we set the isCurrent true
-            // else false
-            // we get data to UI accordingly
-    
-            if(userId === currentId) {
-    
-                chat.dataValues = {...chat.dataValues, userId:null, isCurrent:'true'};
-            }
-            else {
-                chat.dataValues = {...chat.dataValues, userId:null, isCurrent:'false'};
-            }
-        }
-        return res.status(201).json({ response : chats, message:'Successful' });
-    }
-    catch(err) {
-        return res.status(501).json({ message:'Failed', err: err});
-    }
-};
-
 exports.getLastChat = async(req,res,next) => {
 
     try {
